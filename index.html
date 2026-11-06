@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Subtitr UZ — Montaj stillari</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<script src="presets.js"></script>
+<style>
+:root{
+  --bg:#0F1113; --s1:#16181B; --s2:#1E2125; --line:#ffffff12; --tx:#F7F7F8; --mut:#898A8B;
+  --lime:#D1FE17; --lime-ink:#1A1A1A; --r:12px; --r-sm:10px;
+  --disp:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --ui:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--tx);font:14px/1.4 var(--ui);-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+body{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+video{display:block}
+.disp{font-family:var(--disp);font-weight:700;text-transform:uppercase;letter-spacing:-.04em}
+.wrap{padding:0 16px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg)}
+.logo{width:32px;height:32px;border-radius:9px;background:var(--lime);display:grid;place-items:center;color:var(--lime-ink);font:800 13px var(--disp);letter-spacing:-.04em}
+.brand{font:700 16px var(--disp);text-transform:uppercase;letter-spacing:-.04em}
+.brand small{display:block;font:500 11px var(--ui);color:var(--mut);text-transform:none;letter-spacing:0;margin-top:-2px}
+.top .sp{flex:1}
+.pill-btn{height:32px;padding:0 12px;border-radius:var(--r-sm);background:var(--s2);font-weight:600;font-size:13px;display:flex;align-items:center;gap:6px}
+.pill-btn.lime{background:var(--lime);color:var(--lime-ink)}
+
+/* banner */
+.banner{position:relative;margin:4px 16px 0;border-radius:var(--r);overflow:hidden;height:212px;background:var(--s1)}
+.slides{display:flex;height:100%;transition:transform .6s var(--ease)}
+.slide{flex:0 0 100%;position:relative;padding:20px;display:flex;flex-direction:column;justify-content:flex-end}
+.slide video,.slide img{position:absolute;top:0;right:0;width:58%;height:100%;object-fit:cover;object-position:50% 30%}
+.slide{background:radial-gradient(120% 90% at 0% 100%,#D1FE1714,#0000 60%),var(--s1)}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--s1) 0%,var(--s1) 40%,#16181B99 56%,#16181B00 75%)}
+.slide>*:not(video):not(img){position:relative;z-index:1}
+.slide h2{font:700 26px/1 var(--disp);text-transform:uppercase;letter-spacing:-.04em;max-width:250px}
+.slide h2 em{font-style:normal;color:var(--lime);display:block}
+.slide ul{list-style:none;margin:10px 0 14px;color:#d6d7d8;font-size:12px}
+.slide li::before{content:"✓";margin-right:7px;color:var(--lime)}
+.slide .cta{align-self:flex-start;height:36px;padding:0 16px;border-radius:var(--r-sm);background:var(--lime);color:var(--lime-ink);font-weight:600;font-size:13px;box-shadow:0 2px 0 #8fae0f}
+.dots{position:absolute;right:14px;bottom:14px;display:flex;gap:5px;z-index:2}
+.dots i{width:6px;height:6px;border-radius:3px;background:#ffffff40;transition:width .3s var(--ease),background .3s}
+.dots i.on{width:18px;background:var(--lime)}
+
+/* section headers */
+.sec{display:flex;align-items:flex-end;justify-content:space-between;margin:28px 16px 12px}
+.sec h3{font:700 18px var(--disp);text-transform:uppercase;letter-spacing:-.04em;color:var(--lime)}
+.sec p{color:var(--mut);font-size:12px;margin-top:2px}
+.sec .count{color:var(--mut);font-size:12px;font-weight:500}
+
+/* rail (yangi) */
+.rail{display:flex;gap:10px;overflow-x:auto;padding:0 16px;scroll-padding-inline:16px;scroll-snap-type:x mandatory;scrollbar-width:none}
+.rail::-webkit-scrollbar{display:none}
+.rail .card{flex:0 0 42%;scroll-snap-align:start}
+
+/* chips */
+.chips{position:sticky;top:56px;z-index:15;display:flex;gap:8px;overflow-x:auto;padding:10px 16px;background:var(--bg);scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;height:34px;padding:0 14px;border-radius:var(--r-sm);background:var(--s1);color:#c9cacb;font-weight:600;font-size:13px;transition:background .2s,color .2s}
+.chip.on{background:var(--tx);color:var(--bg)}
+
+/* cards */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 10px;padding:4px 16px 0}
+.card{display:block;text-align:left;width:100%}
+.thumb{position:relative;aspect-ratio:9/16;border-radius:var(--r);overflow:hidden;background:var(--s1)}
+.thumb img,.thumb video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb video{opacity:0;transition:opacity .35s}
+.thumb video.ready{opacity:1}
+.thumb::after{content:"";position:absolute;inset:auto 0 0;height:30%;background:linear-gradient(#0000,#0009);pointer-events:none}
+.tag{position:absolute;top:8px;left:8px;z-index:2;height:20px;padding:0 7px;border-radius:6px;background:var(--lime);color:var(--lime-ink);font:700 10px/20px var(--disp);letter-spacing:.02em}
+.tag.hot{background:#FF4D2E;color:#fff}
+.swatch{position:absolute;bottom:9px;left:9px;z-index:2;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:#fff}
+.swatch b{width:12px;height:12px;border-radius:4px;box-shadow:inset 0 0 0 1px #ffffff40}
+.card h4{font:700 14px var(--disp);text-transform:uppercase;letter-spacing:-.04em;margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.card p{color:var(--mut);font-size:12px;line-height:1.35;margin-top:2px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card:active .thumb{transform:scale(.98)}
+.thumb{transition:transform .2s var(--ease)}
+
+/* how it works */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 16px}
+.step{background:var(--s1);border-radius:var(--r);padding:12px}
+.step b{display:block;font:700 22px var(--disp);color:var(--lime);letter-spacing:-.04em}
+.step span{font-size:12px;color:#c9cacb}
+
+/* sheet (detail) */
+.sheet{position:fixed;inset:0;z-index:50;background:var(--bg);transform:translateY(100%);transition:transform .45s var(--ease);overflow-y:auto;padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+.sheet.open{transform:none}
+.hero{position:relative;margin:12px 16px 0;border-radius:var(--r);overflow:hidden;aspect-ratio:9/16;max-height:62vh;margin-inline:auto;width:min(calc(100% - 32px),calc(62vh * 9 / 16));background:var(--s1)}
+.hero video{width:100%;height:100%;object-fit:cover}
+.close{position:absolute;top:10px;right:10px;z-index:3;width:34px;height:34px;border-radius:50%;background:#0F1113b3;backdrop-filter:blur(10px);display:grid;place-items:center;font-size:16px}
+.d-head{margin:18px 16px 0}
+.d-head h2{font:700 28px/1 var(--disp);text-transform:uppercase;letter-spacing:-.04em}
+.d-head p{color:var(--mut);margin-top:6px}
+.lbl{margin:24px 16px 10px;font:700 12px var(--disp);text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.colors{display:flex;gap:10px;padding:0 16px;overflow-x:auto;scrollbar-width:none}
+.colors::-webkit-scrollbar{display:none}
+.sw{flex:none;width:40px;height:40px;border-radius:12px;box-shadow:inset 0 0 0 1px #ffffff26;position:relative;transition:transform .2s var(--ease)}
+.sw.on{transform:scale(1.06);box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--tx)}
+.list{margin:0 16px;background:var(--s1);border-radius:var(--r);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:13px 14px;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row .ic{width:32px;height:32px;border-radius:9px;background:var(--s2);display:grid;place-items:center;font-size:16px;flex:none}
+.row .t{flex:1;min-width:0}
+.row .t b{display:block;font-weight:600;font-size:14px}
+.row .t small{color:var(--mut);font-size:12px}
+.tg{width:46px;height:28px;border-radius:14px;background:#33363b;position:relative;flex:none;transition:background .2s}
+.tg::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .3s var(--ease)}
+.tg.on{background:var(--lime)}.tg.on::after{transform:translateX(18px);background:var(--lime-ink)}
+.seg{display:flex;margin:0 16px;background:var(--s1);border-radius:var(--r);padding:4px}
+.seg button{flex:1;height:36px;border-radius:9px;font-weight:600;color:#c9cacb;transition:background .2s,color .2s}
+.seg .on{background:var(--tx);color:var(--bg)}
+
+/* bottom CTA (Telegram tashqarisida) */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(#0F111300,var(--bg) 35%)}
+.dock button{width:100%;height:52px;border-radius:var(--r);background:var(--lime);color:var(--lime-ink);font-weight:700;font-size:15px;box-shadow:0 3px 0 #8fae0f}
+body.tg-native .dock{display:none}
+
+.toast{position:fixed;left:50%;top:16px;z-index:80;transform:translate(-50%,-140%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:var(--r-sm);font-weight:600;transition:transform .4s var(--ease)}
+.toast.on{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="logo">UZ</div>
+  <div class="brand">Subtitr UZ<small>Montaj stillari</small></div>
+  <div class="sp"></div>
+  <button class="pill-btn lime" id="toBot">🎬 Video yuborish</button>
+</header>
+
+<section class="banner" id="banner">
+  <div class="slides" id="slides"></div>
+  <div class="dots" id="dots"></div>
+</section>
+
+<div class="sec"><div><h3>Yangi stillar</h3><p>Oxirgi qo'shilganlar</p></div></div>
+<div class="rail" id="rail"></div>
+
+<div class="sec"><div><h3>Barcha stillar</h3><p>Kartani bosing — ko'ring, sozlang, tanlang</p></div><span class="count" id="count"></span></div>
+<nav class="chips" id="chips"></nav>
+<div class="grid" id="grid"></div>
+
+<div class="sec"><div><h3>Qanday ishlaydi</h3></div></div>
+<div class="steps">
+  <div class="step"><b>01</b><span>Stilni tanlang</span></div>
+  <div class="step"><b>02</b><span>Botga video yuboring</span></div>
+  <div class="step"><b>03</b><span>2 daqiqada tayyor montaj</span></div>
+</div>
+
+<!-- detail -->
+<section class="sheet" id="sheet" aria-hidden="true">
+  <div class="hero"><video id="dVid" muted loop playsinline preload="auto"></video><button class="close" id="dClose" aria-label="Yopish">✕</button></div>
+  <div class="d-head"><h2 id="dName"></h2><p id="dDesc"></p></div>
+  <div class="lbl">Brend rangi</div>
+  <div class="colors" id="dColors"></div>
+  <div class="lbl">Montajda nima bo'lsin</div>
+  <div class="list" id="dOpts"></div>
+  <div class="lbl">Video tili</div>
+  <div class="seg" id="dLang"></div>
+</section>
+
+<div class="dock" id="dock"><button id="dockBtn">🎬 Video yuborish</button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+const tg = window.Telegram && Telegram.WebApp;
+const inTg = !!(tg && tg.initData);
+const BOT = "subtitruzb_bot";
+const $ = id => document.getElementById(id);
+const P = window.PRESETS || [], CATS = window.CATS || [];
+const STYLE_IDX = {pill: 0, karaoke: 1, box: 2, bold: 3, minimal: 4};   // render.STYLES tartibi
+const OPT_KEYS = ["cut", "zoom", "hook", "emoji", "broll", "stats", "cta"];  // render.OPT_KEYS tartibi
+const OPTS = {
+  cut: ["✂️", "Pauza va xatolarni kesish", "Jim joy, «ee», qayta aytilgan gaplar"],
+  zoom: ["🔍", "Punch-in zoom", "Har kesimda yuzga yaqinlashadi"],
+  hook: ["⚡️", "Hook sarlavha", "Birinchi soniyada katta sarlavha"],
+  emoji: ["😎", "Emoji", "Gapga mos Apple emoji"],
+  broll: ["🎞", "Motion B-roll", "Raqam, foiz, ro'yxatga animatsiya"],
+  stats: ["📊", "Raqam kartochkasi", "Muhim raqamni ajratib ko'rsatadi"],
+  cta: ["👇", "CTA oxirida", "Obuna bo'ling + pastga strelka"],
+};
+const COLORS = ["D1FE17", "FF6A00", "E70001", "FF3D8B", "FFC400", "00C2A8", "1A5BFF", "2196F3", "A64DFF", "FFFFFF"];
+const LANGS = [["uz", "O'zbek"], ["ru", "Русский"], ["auto", "Avto"]];
+
+if (tg) { tg.ready(); tg.expand(); try { tg.setHeaderColor("#0F1113"); tg.setBackgroundColor("#0F1113"); tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {} }
+if (inTg) document.body.classList.add("tg-native");
+const haptic = (k = "light") => { try { tg.HapticFeedback.impactOccurred(k); } catch (e) {} };
+const toast = t => { const el = $("toast"); el.textContent = t; el.classList.add("on"); setTimeout(() => el.classList.remove("on"), 1600); };
+const openBot = (start) => {
+  const url = `https://t.me/${BOT}` + (start ? `?start=${start}` : "");
+  if (tg && tg.openTelegramLink) { tg.openTelegramLink(url); setTimeout(() => tg.close && tg.close(), 250); } else location.href = url;
+};
+
+/* ---------- kartalar ---------- */
+const card = p => `
+  <button class="card" data-id="${p.id}">
+    <div class="thumb">
+      <img src="p/${p.id}.jpg" alt="" loading="lazy">
+      <video data-src="p/${p.id}.mp4" muted loop playsinline preload="none"></video>
+      ${p.tag ? `<span class="tag ${p.tag === "HOT" ? "hot" : ""}">${p.tag === "HOT" ? "🔥 HOT" : "NEW"}</span>` : ""}
+      <span class="swatch"><b style="background:#${p.color}"></b>${({pill:"Plashka",karaoke:"Karaoke",box:"Quti",bold:"Katta so'z",minimal:"Minimal"})[p.style]}</span>
+    </div>
+    <h4>${p.name}</h4><p>${p.desc}</p>
+  </button>`;
+
+const newest = [...P].sort((a, b) => (b.added || "").localeCompare(a.added || "")).slice(0, 5);
+$("rail").innerHTML = newest.map(card).join("");
+let cat = "all";
+function drawGrid() {
+  const list = P.filter(p => cat === "all" || p.cat === cat);
+  $("grid").innerHTML = list.map(card).join("");
+  $("count").textContent = list.length + " ta";
+  observe();
+}
+$("chips").innerHTML = CATS.map(([k, v]) => `<button class="chip ${k === cat ? "on" : ""}" data-cat="${k}">${v}</button>`).join("");
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  cat = b.dataset.cat; haptic();
+  [...$("chips").children].forEach(c => c.classList.toggle("on", c === b));
+  drawGrid();
+});
+
+/* ko'rinayotgan kartalardagi video o'ynaydi (trafik va batareya tejaladi) */
+const io = new IntersectionObserver(es => es.forEach(en => {
+  const v = en.target.querySelector("video");
+  if (en.isIntersecting && en.intersectionRatio > .55) {
+    if (!v.src) { v.src = v.dataset.src; v.addEventListener("playing", () => v.classList.add("ready"), {once: true}); }
+    v.play().catch(() => {});
+  } else if (v.src) v.pause();
+}), {threshold: [0, .55, 1]});
+function observe() { document.querySelectorAll(".thumb").forEach(t => io.observe(t)); }
+drawGrid();
+
+/* ---------- banner ---------- */
+const hot = P.find(p => p.tag === "NEW") || P[0];
+const SLIDES = [
+  {media: `p/${(P[0] || {}).id}.mp4`, h: "Birinchi montaj", em: "Bepul", li: ["Kesish, zoom, subtitr, motion", "2 daqiqada tayyor"], cta: "Video yuborish", act: () => openBot()},
+  {media: `p/${hot.id}.mp4`, h: "Yangi stil:", em: hot.name, li: [hot.desc], cta: "Ko'rish", act: () => openDetail(hot.id)},
+  {media: `p/${(P.find(p => p.clip === "woman") || P[0]).id}.mp4`, h: "Do'stingni chaqir —", em: "+2 video", li: ["Taklif havolasi botdagi «Do'st taklif qilish»da", "Ikkalangizga bonus"], cta: "Botga o'tish", act: () => openBot()},
+];
+$("slides").innerHTML = SLIDES.map((s, i) => `
+  <div class="slide"><video src="${s.media}" muted loop playsinline ${i ? 'preload="none"' : "autoplay"}></video>
+    <h2>${s.h}<em>${s.em}</em></h2><ul>${s.li.map(l => `<li>${l}</li>`).join("")}</ul>
+    <button class="cta" data-s="${i}">${s.cta}</button></div>`).join("");
+$("dots").innerHTML = SLIDES.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("");
+let si = 0, timer;
+function go(i) {
+  si = (i + SLIDES.length) % SLIDES.length;
+  $("slides").style.transform = `translateX(${-100 * si}%)`;
+  [...$("dots").children].forEach((d, k) => d.classList.toggle("on", k === si));
+  [...$("slides").querySelectorAll("video")].forEach((v, k) => k === si ? v.play().catch(() => {}) : v.pause());
+}
+const auto = () => { clearInterval(timer); timer = setInterval(() => go(si + 1), 4500); };
+auto();
+$("slides").addEventListener("click", e => { const b = e.target.closest("[data-s]"); if (b) { haptic("medium"); SLIDES[+b.dataset.s].act(); } });
+let x0 = null;
+$("banner").addEventListener("touchstart", e => x0 = e.touches[0].clientX, {passive: true});
+$("banner").addEventListener("touchend", e => { if (x0 == null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) { go(si + (dx < 0 ? 1 : -1)); auto(); } x0 = null; });
+
+/* ---------- detail ---------- */
+let cur = null, st = null;
+const saved = (() => { try { return JSON.parse(localStorage.getItem("suz_cfg") || "null"); } catch (e) { return null; } })();
+function openDetail(id) {
+  cur = P.find(p => p.id === id); if (!cur) return;
+  st = {c: cur.color, o: OPT_KEYS.map(k => cur.opts[k] !== false), l: (saved && saved.l) || "uz"};
+  $("dName").textContent = cur.name; $("dDesc").textContent = cur.desc;
+  const v = $("dVid"); v.src = `p/${cur.id}.mp4`; v.play().catch(() => {});
+  drawDetail();
+  $("sheet").classList.add("open"); $("sheet").scrollTop = 0; $("sheet").setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  haptic("medium");
+  if (inTg) {
+    tg.BackButton.show();
+    tg.MainButton.setParams({text: `Shu stilda montaj — ${cur.name}`, color: "#D1FE17", text_color: "#1A1A1A", is_visible: true});
+  } else $("dockBtn").textContent = `Shu stilda montaj`;
+}
+function closeDetail() {
+  $("sheet").classList.remove("open"); $("sheet").setAttribute("aria-hidden", "true");
+  $("dVid").pause(); document.body.style.overflow = ""; cur = null;
+  if (inTg) { tg.BackButton.hide(); mainHome(); } else $("dockBtn").textContent = "🎬 Video yuborish";
+}
+function drawDetail() {
+  const cols = COLORS.includes(cur.color) ? COLORS : [cur.color, ...COLORS];
+  $("dColors").innerHTML = cols.map(c => `<button class="sw ${c === st.c ? "on" : ""}" data-c="${c}" style="background:#${c}" aria-label="#${c}"></button>`).join("");
+  $("dOpts").innerHTML = OPT_KEYS.map((k, i) => `<div class="row" data-o="${i}"><span class="ic">${OPTS[k][0]}</span><span class="t"><b>${OPTS[k][1]}</b><small>${OPTS[k][2]}</small></span><span class="tg ${st.o[i] ? "on" : ""}"></span></div>`).join("");
+  $("dLang").innerHTML = LANGS.map(([k, v]) => `<button class="${k === st.l ? "on" : ""}" data-l="${k}">${v}</button>`).join("");
+}
+$("sheet").addEventListener("click", e => {
+  const t = e.target.closest("[data-c],[data-o],[data-l]"); if (!t) return;
+  if (t.dataset.c) st.c = t.dataset.c;
+  if (t.dataset.o) st.o[+t.dataset.o] = !st.o[+t.dataset.o];
+  if (t.dataset.l) st.l = t.dataset.l;
+  try { tg.HapticFeedback.selectionChanged(); } catch (e) {}
+  drawDetail();
+});
+$("dClose").onclick = closeDetail;
+document.addEventListener("click", e => { const c = e.target.closest(".card"); if (c) openDetail(c.dataset.id); });
+
+function apply() {
+  if (!cur) return openBot();
+  const code = `cfg_s${STYLE_IDX[cur.style] || 0}c${st.c}o${st.o.map(b => b ? 1 : 0).join("")}l${st.l}p${cur.id}`;
+  try { localStorage.setItem("suz_cfg", JSON.stringify({id: cur.id, l: st.l})); } catch (e) {}
+  haptic("heavy"); toast("✅ " + cur.name + " tanlandi");
+  setTimeout(() => openBot(code), 350);
+}
+function mainHome() { tg.MainButton.setParams({text: "🎬 Botga video yuborish", color: "#D1FE17", text_color: "#1A1A1A", is_visible: true}); }
+if (inTg) {
+  tg.MainButton.onClick(() => cur ? apply() : openBot());
+  tg.BackButton.onClick(closeDetail);
+  mainHome();
+}
+$("dockBtn").onclick = () => cur ? apply() : openBot();
+$("toBot").onclick = () => openBot();
+
+/* bot ?style=<id> bilan ochsa — shu karta ochiladi */
+const q = new URLSearchParams(location.search).get("style");
+if (q && P.some(p => p.id === q)) openDetail(q);
+})();
+</script>
+</body>
+</html>
