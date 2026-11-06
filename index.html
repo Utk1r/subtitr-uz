@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <meta name="color-scheme" content="dark">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="theme-color" content="#0F1113">
 <title>Subtitr UZ — Montaj stillari</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,7 +31,7 @@ video{display:block}
 
 /* top bar */
 .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg)}
-.logo{width:32px;height:32px;border-radius:9px;background:var(--lime);display:grid;place-items:center;color:var(--lime-ink);font:800 13px var(--disp);letter-spacing:-.04em}
+.logo{width:34px;height:34px;display:block}
 .brand{font:700 16px var(--disp);text-transform:uppercase;letter-spacing:-.04em}
 .brand small{display:block;font:500 11px var(--ui);color:var(--mut);text-transform:none;letter-spacing:0;margin-top:-2px}
 .top .sp{flex:1}
@@ -139,7 +142,7 @@ body.tg-native .dock{display:none}
 <body>
 
 <header class="top">
-  <div class="logo">UZ</div>
+  <img class="logo" src="icon.svg" alt="Subtitr UZ" width="32" height="32">
   <div class="brand">Subtitr UZ<small>Montaj stillari</small></div>
   <div class="sp"></div>
   <button class="pill-btn lime" id="toBot" data-ic="videocam">Video yuborish</button>
