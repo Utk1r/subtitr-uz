@@ -46,7 +46,13 @@ video{display:block}
 .slide h2{font:700 26px/1 var(--disp);text-transform:uppercase;letter-spacing:-.04em;max-width:250px}
 .slide h2 em{font-style:normal;color:var(--lime);display:block}
 .slide ul{list-style:none;margin:10px 0 14px;color:#d6d7d8;font-size:12px}
-.slide li::before{content:"✓";margin-right:7px;color:var(--lime)}
+.slide li{display:flex;align-items:center;gap:7px}.slide li .i{width:15px;height:15px;color:var(--lime)}
+.i{width:1em;height:1em;display:inline-block;flex:none;fill:currentColor;vertical-align:-.14em}
+.row .ic .i{width:18px;height:18px;color:var(--tx)}
+.lbl{display:flex;align-items:center;gap:7px}.lbl .i{width:15px;height:15px}
+.step .i{width:22px;height:22px;color:var(--lime);display:block;margin-bottom:8px}
+.close .i{width:18px;height:18px}.tag .i{width:11px;height:11px;vertical-align:-1px;margin-right:2px}
+.pill-btn .i,.dock .i{width:18px;height:18px}.dock button{display:flex;align-items:center;justify-content:center;gap:8px}
 .slide .cta{align-self:flex-start;height:36px;padding:0 16px;border-radius:var(--r-sm);background:var(--lime);color:var(--lime-ink);font-weight:600;font-size:13px;box-shadow:0 2px 0 #8fae0f}
 .dots{position:absolute;right:14px;bottom:14px;display:flex;gap:5px;z-index:2}
 .dots i{width:6px;height:6px;border-radius:3px;background:#ffffff40;transition:width .3s var(--ease),background .3s}
@@ -136,7 +142,7 @@ body.tg-native .dock{display:none}
   <div class="logo">UZ</div>
   <div class="brand">Subtitr UZ<small>Montaj stillari</small></div>
   <div class="sp"></div>
-  <button class="pill-btn lime" id="toBot">🎬 Video yuborish</button>
+  <button class="pill-btn lime" id="toBot" data-ic="videocam">Video yuborish</button>
 </header>
 
 <section class="banner" id="banner">
@@ -153,24 +159,24 @@ body.tg-native .dock{display:none}
 
 <div class="sec"><div><h3>Qanday ishlaydi</h3></div></div>
 <div class="steps">
-  <div class="step"><b>01</b><span>Stilni tanlang</span></div>
-  <div class="step"><b>02</b><span>Botga video yuboring</span></div>
-  <div class="step"><b>03</b><span>2 daqiqada tayyor montaj</span></div>
+  <div class="step" data-ic="color-palette"><b>01</b><span>Stilni tanlang</span></div>
+  <div class="step" data-ic="videocam"><b>02</b><span>Botga video yuboring</span></div>
+  <div class="step" data-ic="sparkles"><b>03</b><span>2 daqiqada tayyor montaj</span></div>
 </div>
 
 <!-- detail -->
 <section class="sheet" id="sheet" aria-hidden="true">
-  <div class="hero"><video id="dVid" muted loop playsinline preload="auto"></video><button class="close" id="dClose" aria-label="Yopish">✕</button></div>
+  <div class="hero"><video id="dVid" muted loop playsinline preload="auto"></video><button class="close" id="dClose" aria-label="Yopish" data-ic="close"></button></div>
   <div class="d-head"><h2 id="dName"></h2><p id="dDesc"></p></div>
-  <div class="lbl">Brend rangi</div>
+  <div class="lbl" data-ic="color-palette">Brend rangi</div>
   <div class="colors" id="dColors"></div>
-  <div class="lbl">Montajda nima bo'lsin</div>
+  <div class="lbl" data-ic="options">Montajda nima bo'lsin</div>
   <div class="list" id="dOpts"></div>
-  <div class="lbl">Video tili</div>
+  <div class="lbl" data-ic="language">Video tili</div>
   <div class="seg" id="dLang"></div>
 </section>
 
-<div class="dock" id="dock"><button id="dockBtn">🎬 Video yuborish</button></div>
+<div class="dock" id="dock"><button id="dockBtn"></button></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -179,17 +185,23 @@ const tg = window.Telegram && Telegram.WebApp;
 const inTg = !!(tg && tg.initData);
 const BOT = "subtitruzb_bot";
 const $ = id => document.getElementById(id);
+/* iOS uslubidagi fill ikonkalar: Ionicons 7.4 (MIT) */
+const ICONS = {"arrow-down-circle": "<path d=\"M256 464c114.87 0 208-93.13 208-208S370.87 48 256 48 48 141.13 48 256s93.13 208 208 208zm-91.36-212.65a16 16 0 0122.63-.09L240 303.58V170a16 16 0 0132 0v133.58l52.73-52.32A16 16 0 11347.27 274l-80 79.39a16 16 0 01-22.54 0l-80-79.39a16 16 0 01-.09-22.65z\"/>", "checkmark-circle": "<path d=\"M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm108.25 138.29l-134.4 160a16 16 0 01-12 5.71h-.27a16 16 0 01-11.89-5.3l-57.6-64a16 16 0 1123.78-21.4l45.29 50.32 122.59-145.91a16 16 0 0124.5 20.58z\"/>", "close": "<path d=\"M289.94 256l95-95A24 24 0 00351 127l-95 95-95-95a24 24 0 00-34 34l95 95-95 95a24 24 0 1034 34l95-95 95 95a24 24 0 0034-34z\"/>", "color-palette": "<path d=\"M441 336.2l-.06-.05c-9.93-9.18-22.78-11.34-32.16-12.92l-.69-.12c-9.05-1.49-10.48-2.5-14.58-6.17-2.44-2.17-5.35-5.65-5.35-9.94s2.91-7.77 5.34-9.94l30.28-26.87c25.92-22.91 40.2-53.66 40.2-86.59s-14.25-63.68-40.2-86.6c-35.89-31.59-85-49-138.37-49C223.72 48 162 71.37 116 112.11c-43.87 38.77-68 90.71-68 146.24s24.16 107.47 68 146.23c21.75 19.24 47.49 34.18 76.52 44.42a266.17 266.17 0 0086.87 15h1.81c61 0 119.09-20.57 159.39-56.4 9.7-8.56 15.15-20.83 15.34-34.56.21-14.17-5.37-27.95-14.93-36.84zM112 208a32 32 0 1132 32 32 32 0 01-32-32zm40 135a32 32 0 1132-32 32 32 0 01-32 32zm40-199a32 32 0 1132 32 32 32 0 01-32-32zm64 271a48 48 0 1148-48 48 48 0 01-48 48zm72-239a32 32 0 1132-32 32 32 0 01-32 32z\"/>", "cut": "<path d=\"M103.48 224a71.64 71.64 0 0044.76-15.66l41.5 16.89 6.82-12.63a39.15 39.15 0 014.32-6.37l14.22-14.42-41.17-24.94A72 72 0 10103.48 224zm0-112a40 40 0 11-40 40 40 40 0 0140-40z\"/><path d=\"M480 169l-5.52-12.58c-4.48-10.42-14.74-16-32.78-17.85-10.12-1-26.95-1.24-49.69 3.81-20 4.45-122.14 28.2-164.95 58.62-20.25 14.39-24.06 33.67-27.06 49.16-2.78 14.14-5 25.31-18 35-15 11.14-27.27 16.38-33.58 18.6a71.74 71.74 0 1024.79 38zm-224.52 87a16 16 0 1116-16 16 16 0 01-16 16zm-152 144a40 40 0 1140-40 40 40 0 01-40 40z\"/><path d=\"M343.79 259.87l-83.74 48.18 27.63 13.08 3.62 1.74C310 331.92 359.74 356 410.53 359c3.89.23 7.47.34 10.78.34C442 359.31 453 354 459.75 350L480 336z\"/>", "film": "<path d=\"M436 80H76a44.05 44.05 0 00-44 44v264a44.05 44.05 0 0044 44h360a44.05 44.05 0 0044-44V124a44.05 44.05 0 00-44-44zM112 388a12 12 0 01-12 12H76a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm0-80a12 12 0 01-12 12H76a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm0-80a12 12 0 01-12 12H76a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm0-80a12 12 0 01-12 12H76a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm241.68 124H158.32a16 16 0 010-32h195.36a16 16 0 110 32zM448 388a12 12 0 01-12 12h-24a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm0-80a12 12 0 01-12 12h-24a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm0-80a12 12 0 01-12 12h-24a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12zm0-80a12 12 0 01-12 12h-24a12 12 0 01-12-12v-24a12 12 0 0112-12h24a12 12 0 0112 12z\"/>", "flame": "<path d=\"M394.23 197.56a300.43 300.43 0 00-53.37-90C301.2 61.65 249.05 32 208 32a16 16 0 00-15.48 20c13.87 53-14.88 97.07-45.31 143.72C122 234.36 96 274.27 96 320c0 88.22 71.78 160 160 160s160-71.78 160-160c0-43.3-7.32-84.49-21.77-122.44zm-105.9 221.13C278 429.69 265.05 432 256 432s-22-2.31-32.33-13.31S208 390.24 208 368c0-25.14 8.82-44.28 17.34-62.78 4.95-10.74 10-21.67 13-33.37a8 8 0 0112.49-4.51A126.48 126.48 0 01275 292c18.17 24 29 52.42 29 76 0 22.24-5.42 39.77-15.67 50.69z\"/>", "flash": "<path d=\"M194.82 496a18.36 18.36 0 01-18.1-21.53v-.11L204.83 320H96a16 16 0 01-12.44-26.06L302.73 23a18.45 18.45 0 0132.8 13.71c0 .3-.08.59-.13.89L307.19 192H416a16 16 0 0112.44 26.06L209.24 489a18.45 18.45 0 01-14.42 7z\"/>", "gift": "<path d=\"M200 144h40v-40a40 40 0 10-40 40zM352 104a40 40 0 00-80 0v40h40a40 40 0 0040-40z\" fill=\"none\"/><path d=\"M80 416a64 64 0 0064 64h92a4 4 0 004-4V292a4 4 0 00-4-4H88a8 8 0 00-8 8zM240 252V144h32v108a4 4 0 004 4h140a47.93 47.93 0 0016-2.75A48.09 48.09 0 00464 208v-16a48 48 0 00-48-48h-40.54a2 2 0 01-1.7-3A72 72 0 00256 58.82 72 72 0 00138.24 141a2 2 0 01-1.7 3H96a48 48 0 00-48 48v16a48.09 48.09 0 0032 45.25A47.93 47.93 0 0096 256h140a4 4 0 004-4zm32-148a40 40 0 1140 40h-40zm-74.86-39.9A40 40 0 01240 104v40h-40a40 40 0 01-2.86-79.89zM276 480h92a64 64 0 0064-64V296a8 8 0 00-8-8H276a4 4 0 00-4 4v184a4 4 0 004 4z\"/>", "happy": "<path d=\"M414.39 97.61A224 224 0 1097.61 414.39 224 224 0 10414.39 97.61zM184 208a24 24 0 11-24 24 23.94 23.94 0 0124-24zm167.67 106.17c-12 40.3-50.2 69.83-95.62 69.83s-83.62-29.53-95.72-69.83a8 8 0 017.83-10.17h175.69a8 8 0 017.82 10.17zM328 256a24 24 0 1124-24 23.94 23.94 0 01-24 24z\"/>", "language": "<path d=\"M478.33 433.6l-90-218a22 22 0 00-40.67 0l-90 218a22 22 0 1040.67 16.79L316.66 406h102.67l18.33 44.39A22 22 0 00458 464a22 22 0 0020.32-30.4zM334.83 362L368 281.65 401.17 362zM267.84 342.92a22 22 0 00-4.89-30.7c-.2-.15-15-11.13-36.49-34.73 39.65-53.68 62.11-114.75 71.27-143.49H330a22 22 0 000-44H214V70a22 22 0 00-44 0v20H54a22 22 0 000 44h197.25c-9.52 26.95-27.05 69.5-53.79 108.36-31.41-41.68-43.08-68.65-43.17-68.87a22 22 0 00-40.58 17c.58 1.38 14.55 34.23 52.86 83.93.92 1.19 1.83 2.35 2.74 3.51-39.24 44.35-77.74 71.86-93.85 80.74a22 22 0 1021.07 38.63c2.16-1.18 48.6-26.89 101.63-85.59 22.52 24.08 38 35.44 38.93 36.1a22 22 0 0030.75-4.9z\"/>", "options": "<path d=\"M64 144h226.75a48 48 0 0090.5 0H448a16 16 0 000-32h-66.75a48 48 0 00-90.5 0H64a16 16 0 000 32zM448 368h-66.75a48 48 0 00-90.5 0H64a16 16 0 000 32h226.75a48 48 0 0090.5 0H448a16 16 0 000-32zM448 240H221.25a48 48 0 00-90.5 0H64a16 16 0 000 32h66.75a48 48 0 0090.5 0H448a16 16 0 000-32z\"/>", "play-circle": "<path d=\"M256 48C141.31 48 48 141.31 48 256s93.31 208 208 208 208-93.31 208-208S370.69 48 256 48zm74.77 217.3l-114.45 69.14a10.78 10.78 0 01-16.32-9.31V186.87a10.78 10.78 0 0116.32-9.31l114.45 69.14a10.89 10.89 0 010 18.6z\"/>", "scan": "<path d=\"M342 444h46a56 56 0 0056-56v-46M444 170v-46a56 56 0 00-56-56h-46M170 444h-46a56 56 0 01-56-56v-46M68 170v-46a56 56 0 0156-56h46\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"44\"/>", "sparkles": "<path d=\"M208 512a24.84 24.84 0 01-23.34-16l-39.84-103.6a16.06 16.06 0 00-9.19-9.19L32 343.34a25 25 0 010-46.68l103.6-39.84a16.06 16.06 0 009.19-9.19L184.66 144a25 25 0 0146.68 0l39.84 103.6a16.06 16.06 0 009.19 9.19l103 39.63a25.49 25.49 0 0116.63 24.1 24.82 24.82 0 01-16 22.82l-103.6 39.84a16.06 16.06 0 00-9.19 9.19L231.34 496A24.84 24.84 0 01208 512zm66.85-254.84zM88 176a14.67 14.67 0 01-13.69-9.4l-16.86-43.84a7.28 7.28 0 00-4.21-4.21L9.4 101.69a14.67 14.67 0 010-27.38l43.84-16.86a7.31 7.31 0 004.21-4.21L74.16 9.79A15 15 0 0186.23.11a14.67 14.67 0 0115.46 9.29l16.86 43.84a7.31 7.31 0 004.21 4.21l43.84 16.86a14.67 14.67 0 010 27.38l-43.84 16.86a7.28 7.28 0 00-4.21 4.21l-16.86 43.84A14.67 14.67 0 0188 176zM400 256a16 16 0 01-14.93-10.26l-22.84-59.37a8 8 0 00-4.6-4.6l-59.37-22.84a16 16 0 010-29.86l59.37-22.84a8 8 0 004.6-4.6l22.67-58.95a16.45 16.45 0 0113.17-10.57 16 16 0 0116.86 10.15l22.84 59.37a8 8 0 004.6 4.6l59.37 22.84a16 16 0 010 29.86l-59.37 22.84a8 8 0 00-4.6 4.6l-22.84 59.37A16 16 0 01400 256z\"/>", "stats-chart": "<path d=\"M104 496H72a24 24 0 01-24-24V328a24 24 0 0124-24h32a24 24 0 0124 24v144a24 24 0 01-24 24zM328 496h-32a24 24 0 01-24-24V232a24 24 0 0124-24h32a24 24 0 0124 24v240a24 24 0 01-24 24zM440 496h-32a24 24 0 01-24-24V120a24 24 0 0124-24h32a24 24 0 0124 24v352a24 24 0 01-24 24zM216 496h-32a24 24 0 01-24-24V40a24 24 0 0124-24h32a24 24 0 0124 24v432a24 24 0 01-24 24z\"/>", "videocam": "<path d=\"M464 384.39a32 32 0 01-13-2.77 15.77 15.77 0 01-2.71-1.54l-82.71-58.22A32 32 0 01352 295.7v-79.4a32 32 0 0113.58-26.16l82.71-58.22a15.77 15.77 0 012.71-1.54 32 32 0 0145 29.24v192.76a32 32 0 01-32 32zM268 400H84a68.07 68.07 0 01-68-68V180a68.07 68.07 0 0168-68h184.48A67.6 67.6 0 01336 179.52V332a68.07 68.07 0 01-68 68z\"/>"};
+const ic = n => `<svg class="i" viewBox="0 0 512 512" aria-hidden="true">${ICONS[n] || ""}</svg>`;
+document.querySelectorAll("[data-ic]").forEach(el => el.insertAdjacentHTML("afterbegin", ic(el.dataset.ic)));
+const dock = (style) => { $("dockBtn").innerHTML = style ? ic("sparkles") + "Shu stilda montaj" : ic("videocam") + "Video yuborish"; };
+dock(false);
 const P = window.PRESETS || [], CATS = window.CATS || [];
 const STYLE_IDX = {pill: 0, karaoke: 1, box: 2, bold: 3, minimal: 4};   // render.STYLES tartibi
 const OPT_KEYS = ["cut", "zoom", "hook", "emoji", "broll", "stats", "cta"];  // render.OPT_KEYS tartibi
 const OPTS = {
-  cut: ["✂️", "Pauza va xatolarni kesish", "Jim joy, «ee», qayta aytilgan gaplar"],
-  zoom: ["🔍", "Punch-in zoom", "Har kesimda yuzga yaqinlashadi"],
-  hook: ["⚡️", "Hook sarlavha", "Birinchi soniyada katta sarlavha"],
-  emoji: ["😎", "Emoji", "Gapga mos Apple emoji"],
-  broll: ["🎞", "Motion B-roll", "Raqam, foiz, ro'yxatga animatsiya"],
-  stats: ["📊", "Raqam kartochkasi", "Muhim raqamni ajratib ko'rsatadi"],
-  cta: ["👇", "CTA oxirida", "Obuna bo'ling + pastga strelka"],
+  cut: ["cut", "Pauza va xatolarni kesish", "Jim joy, «ee», qayta aytilgan gaplar"],
+  zoom: ["scan", "Punch-in zoom", "Har kesimda yuzga yaqinlashadi"],
+  hook: ["flash", "Hook sarlavha", "Birinchi soniyada katta sarlavha"],
+  emoji: ["happy", "Emoji", "Gapga mos Apple emoji"],
+  broll: ["film", "Motion B-roll", "Raqam, foiz, ro'yxatga animatsiya"],
+  stats: ["stats-chart", "Raqam kartochkasi", "Muhim raqamni ajratib ko'rsatadi"],
+  cta: ["arrow-down-circle", "CTA oxirida", "Obuna bo'ling + pastga strelka"],
 };
 const COLORS = ["D1FE17", "FF6A00", "E70001", "FF3D8B", "FFC400", "00C2A8", "1A5BFF", "2196F3", "A64DFF", "FFFFFF"];
 const LANGS = [["uz", "O'zbek"], ["ru", "Русский"], ["auto", "Avto"]];
@@ -209,7 +221,7 @@ const card = p => `
     <div class="thumb">
       <img src="p/${p.id}.jpg" alt="" loading="lazy">
       <video data-src="p/${p.id}.mp4" muted loop playsinline preload="none"></video>
-      ${p.tag ? `<span class="tag ${p.tag === "HOT" ? "hot" : ""}">${p.tag === "HOT" ? "🔥 HOT" : "NEW"}</span>` : ""}
+      ${p.tag ? `<span class="tag ${p.tag === "HOT" ? "hot" : ""}">${p.tag === "HOT" ? ic("flame") + "HOT" : "NEW"}</span>` : ""}
       <span class="swatch"><b style="background:#${p.color}"></b>${({pill:"Plashka",karaoke:"Karaoke",box:"Quti",bold:"Katta so'z",minimal:"Minimal"})[p.style]}</span>
     </div>
     <h4>${p.name}</h4><p>${p.desc}</p>
@@ -252,7 +264,7 @@ const SLIDES = [
 ];
 $("slides").innerHTML = SLIDES.map((s, i) => `
   <div class="slide"><video src="${s.media}" muted loop playsinline ${i ? 'preload="none"' : "autoplay"}></video>
-    <h2>${s.h}<em>${s.em}</em></h2><ul>${s.li.map(l => `<li>${l}</li>`).join("")}</ul>
+    <h2>${s.h}<em>${s.em}</em></h2><ul>${s.li.map(l => `<li>${ic("checkmark-circle")}${l}</li>`).join("")}</ul>
     <button class="cta" data-s="${i}">${s.cta}</button></div>`).join("");
 $("dots").innerHTML = SLIDES.map((_, i) => `<i class="${i ? "" : "on"}"></i>`).join("");
 let si = 0, timer;
@@ -284,17 +296,17 @@ function openDetail(id) {
   if (inTg) {
     tg.BackButton.show();
     tg.MainButton.setParams({text: `Shu stilda montaj — ${cur.name}`, color: "#D1FE17", text_color: "#1A1A1A", is_visible: true});
-  } else $("dockBtn").textContent = `Shu stilda montaj`;
+  } else dock(true);
 }
 function closeDetail() {
   $("sheet").classList.remove("open"); $("sheet").setAttribute("aria-hidden", "true");
   $("dVid").pause(); document.body.style.overflow = ""; cur = null;
-  if (inTg) { tg.BackButton.hide(); mainHome(); } else $("dockBtn").textContent = "🎬 Video yuborish";
+  if (inTg) { tg.BackButton.hide(); mainHome(); } else dock(false);
 }
 function drawDetail() {
   const cols = COLORS.includes(cur.color) ? COLORS : [cur.color, ...COLORS];
   $("dColors").innerHTML = cols.map(c => `<button class="sw ${c === st.c ? "on" : ""}" data-c="${c}" style="background:#${c}" aria-label="#${c}"></button>`).join("");
-  $("dOpts").innerHTML = OPT_KEYS.map((k, i) => `<div class="row" data-o="${i}"><span class="ic">${OPTS[k][0]}</span><span class="t"><b>${OPTS[k][1]}</b><small>${OPTS[k][2]}</small></span><span class="tg ${st.o[i] ? "on" : ""}"></span></div>`).join("");
+  $("dOpts").innerHTML = OPT_KEYS.map((k, i) => `<div class="row" data-o="${i}"><span class="ic">${ic(OPTS[k][0])}</span><span class="t"><b>${OPTS[k][1]}</b><small>${OPTS[k][2]}</small></span><span class="tg ${st.o[i] ? "on" : ""}"></span></div>`).join("");
   $("dLang").innerHTML = LANGS.map(([k, v]) => `<button class="${k === st.l ? "on" : ""}" data-l="${k}">${v}</button>`).join("");
 }
 $("sheet").addEventListener("click", e => {
@@ -312,10 +324,10 @@ function apply() {
   if (!cur) return openBot();
   const code = `cfg_s${STYLE_IDX[cur.style] || 0}c${st.c}o${st.o.map(b => b ? 1 : 0).join("")}l${st.l}p${cur.id}`;
   try { localStorage.setItem("suz_cfg", JSON.stringify({id: cur.id, l: st.l})); } catch (e) {}
-  haptic("heavy"); toast("✅ " + cur.name + " tanlandi");
+  haptic("heavy"); toast(cur.name + " tanlandi");
   setTimeout(() => openBot(code), 350);
 }
-function mainHome() { tg.MainButton.setParams({text: "🎬 Botga video yuborish", color: "#D1FE17", text_color: "#1A1A1A", is_visible: true}); }
+function mainHome() { tg.MainButton.setParams({text: "Botga video yuborish", color: "#D1FE17", text_color: "#1A1A1A", is_visible: true}); }
 if (inTg) {
   tg.MainButton.onClick(() => cur ? apply() : openBot());
   tg.BackButton.onClick(closeDetail);
